@@ -1,33 +1,15 @@
 pipeline {
   agent any
   environment {
-    // Set the Node.js version you want to use
-    NODE_VERSION = '14.17.0'
+    SCANNER_HOME = tool 'SonarQube'
   }
   stages {
-    stage('Checkout') {
+    stage('Test') {
       steps {
-        // Checkout the code from your source code management system
-        checkout scm
-      }
-    }
-    stage('Install Dependencies') {
-      steps {
-        // Install the Node.js dependencies
-        sh 'npm install'
-      }
-    }
-    stage('Run Tests') {
-      steps {
-        // Run the tests for your project
-        sh 'npm test'
-      }
-    }
-    stage('SonarScanner') {
-      steps {
-        // Run SonarScanner with the necessary parameters
-        withSonarQubeEnv('My SonarQube Server') {
-          sh 'sonar-scanner'
+        withSonarQubeEnv('SonarQube') {
+          sh "${SCANNER_HOME}/bin/sonar-scanner \
+            -D sonar.projectKey=adv_java \
+            -D sonar.projectName=Unreal-Engine-pro"
         }
       }
     }
